@@ -13,7 +13,7 @@ import * as gfx from 'gophergfx'
  */
 export class Arrow extends gfx.Node3
 {
-    private _vector: gfx.Vector3 = gfx.Vector3.UP;
+    private _vector: gfx.Vector3 = gfx.Vector3.FORWARD;
     private shaft: gfx.Mesh3 = new gfx.Mesh3();
     private cone: gfx.Mesh3 = new gfx.Mesh3();
 
@@ -22,11 +22,13 @@ export class Arrow extends gfx.Node3
         super();
         
         this.shaft = gfx.Geometry3Factory.createCylinder(10, 0.04, 0.75);
-        this.shaft.position = new gfx.Vector3(0, 0.75/2, 0);
+        this.shaft.rotation = gfx.Quaternion.makeRotationX(-Math.PI/2);
+        this.shaft.position = new gfx.Vector3(0, 0, -0.75/2);
         this.add(this.shaft);
 
         this.cone = gfx.Geometry3Factory.createCone(0.1, 0.25);
-        this.cone.position = new gfx.Vector3(0, 0.75 + 0.25/2, 0);
+        this.cone.rotation = gfx.Quaternion.makeRotationX(-Math.PI/2);
+        this.cone.position = new gfx.Vector3(0, 0, -0.75 - 0.25/2);
         this.add(this.cone);
 
         if (color instanceof gfx.Color) {
@@ -64,9 +66,6 @@ export class Arrow extends gfx.Node3
         const len = this.vector.length();
         this.scale = new gfx.Vector3(len, len, len);
 
-        const dir = gfx.Vector3.normalize(vector);
-        const rotAxis = gfx.Vector3.cross(gfx.Vector3.UP, dir);
-        const rotAngle = gfx.Vector3.angleBetween(gfx.Vector3.UP, dir);
-        this.rotation = gfx.Quaternion.makeAxisAngle(rotAxis, rotAngle);
+        this.rotation = gfx.Quaternion.lookAt(gfx.Vector3.ZERO, vector, gfx.Vector3.UP);
     }
 }
