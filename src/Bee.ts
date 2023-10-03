@@ -1,12 +1,20 @@
 import * as gfx from 'gophergfx'
 
-/** 
+/** This class is similar to the Arrow class used in AngryVectors, but there are a
+ * few interesting differences:
+ * - Bee's position and velocity are updated with acceleration due to gravity and equations of motion
+ * - Bee's geometry is composed of four spheres that have been transformed and colored to create a bee
  */
 export class Bee extends gfx.Node3
 {
-    private _defaultHeading = gfx.Vector3.RIGHT;
+    // The bee is oriented along its velocity unless it equals (0,0,0) in which case it is
+    // oriented to face in the defaultHeading direction.
+    private _defaultHeading = new gfx.Vector3(1, 0, 0);
+    // Uniform scale factor to apply to the bee geometry, defaults to 1.0
     private _size = 1;
-    private _velocity = gfx.Vector3.ZERO;
+    // Current velocity of the bee; initialized to 0,0,0
+    private _velocity = new gfx.Vector3(0, 0, 0);
+
 
     public get defaultHeading() {
         return this._defaultHeading;
@@ -32,61 +40,29 @@ export class Bee extends gfx.Node3
         this._velocity = value;
     }
 
-    static mul(lhs: gfx.Matrix4, rhs: gfx.Matrix4, ...additionalRHS: gfx.Matrix4[]): gfx.Matrix4
-    {
-        let result = gfx.Matrix4.multiply(lhs, rhs);
-        if (additionalRHS.length > 0) {
-            for (let i=0; i<additionalRHS.length; i++) {
-                result = gfx.Matrix4.multiply(result, additionalRHS[i]);
-            }
-        }
-        return result;
-    }
-
+    // The size parameter is optional.  It can be used to set a uniform scale factor for
+    // the bee geometry to make the bee larger or smaller.  Default = 1.0, i.e., no scaling.
     constructor(size?: number)
     {
         super();
 
+        // In typescript, this is how to test whether the size parameter was provided to the
+        // constructor or not.  If size was provided, then its type will be "number", otherwise
+        // its type will be "undefined".
         if (typeof size == "number") {
             this.size = size;
         }
 
+        // TODO: Let's make this Bee look like a bee!
         const beeBody = gfx.Geometry3Factory.createSphere(2);
-        const sBody = gfx.Matrix4.makeScale(new gfx.Vector3(.5, .5, .8));
-        beeBody.setLocalToParentMatrix(sBody, false);
-        beeBody.material.setColor(new gfx.Color(1, 0.82, 0));
         this.add(beeBody);
 
-        const beeHead = gfx.Geometry3Factory.createSphere(2);
-        const tHead = gfx.Matrix4.makeTranslation(new gfx.Vector3(0, .1, -.8));
-        const sHead = gfx.Matrix4.makeScale(new gfx.Vector3(.4, .4, .4));
-        const totalHead = gfx.Matrix4.multiply(tHead, sHead);
-        beeHead.setLocalToParentMatrix(totalHead, false);
-        beeHead.material.setColor(new gfx.Color(0.2, 0.2, 0.2));
-        this.add(beeHead);
-
-        const beeLeftWing = gfx.Geometry3Factory.createSphere(2);
-        const tLeftWing = gfx.Matrix4.makeTranslation(new gfx.Vector3(-.55, .8, .5));
-        const sWings = gfx.Matrix4.makeScale(new gfx.Vector3(.2, .05, .8));
-        const pitchWings = gfx.Matrix4.makeRotationX(-Math.PI/8);
-        const rollLeftWing = gfx.Matrix4.makeRotationY(-Math.PI/8);
-        const totalLeftWing = Bee.mul(tLeftWing, rollLeftWing, pitchWings, sWings);
-        beeLeftWing.setLocalToParentMatrix(totalLeftWing, false);
-        beeLeftWing.material = new gfx.UnlitMaterial();
-        beeLeftWing.material.setColor(gfx.Color.WHITE);
-        this.add(beeLeftWing);
-        
-        const beeRightWing = gfx.Geometry3Factory.createSphere(2);
-        const tRightWing = gfx.Matrix4.makeTranslation(new gfx.Vector3(.55, .8, .5));
-        const rollRightWing = gfx.Matrix4.makeRotationY(Math.PI/8);
-        const totalRightWing = Bee.mul(tRightWing, rollRightWing, pitchWings, sWings);
-        beeRightWing.setLocalToParentMatrix(totalRightWing, false);
-        beeRightWing.material = new gfx.UnlitMaterial();
-        beeRightWing.material.setColor(gfx.Color.WHITE);
-        this.add(beeRightWing);
     }
 
     public update(deltaTime: number) {
+        // TODO: Make sure you understand everything that is happening in this function!
+
+        // The default heading is used only in the case when the bee's velocity = (0,0,0).
         let heading = this.defaultHeading;
         if (this.velocity.length() != 0) {
             const a = new gfx.Vector3(0, -10, 0);
@@ -98,6 +74,6 @@ export class Bee extends gfx.Node3
         const T = gfx.Matrix4.makeTranslation(this.position);
         const R = gfx.Matrix4.lookAt(gfx.Vector3.ZERO, heading, gfx.Vector3.UP);
         const S = gfx.Matrix4.makeScale(new gfx.Vector3(this.size, this.size, this.size));
-        this.setLocalToParentMatrix(Bee.mul(T, R, S), false);
+        this.setLocalToParentMatrix(gfx.Matrix4.multiplyAll(T, R, S), false);
     }
 }

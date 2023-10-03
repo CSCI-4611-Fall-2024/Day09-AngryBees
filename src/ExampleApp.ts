@@ -119,9 +119,9 @@ export class ExampleApp extends gfx.GfxApp
         const zMin = boxPos.z - boxSize.z/2;
         const zMax = boxPos.z + boxSize.z/2;
 
-        if (((spherePos.x + sphereRad >= xMin) && (spherePos.x - sphereRad <= xMax)) && 
-            ((spherePos.y + sphereRad >= yMin) && (spherePos.y - sphereRad <= yMax)) &&
-            ((spherePos.z + sphereRad >= zMin) && (spherePos.z - sphereRad <= zMax))) {
+        if (((spherePos.x >= xMin - sphereRad) && (spherePos.x <= xMax + sphereRad )) && 
+            ((spherePos.y >= yMin - sphereRad) && (spherePos.y <= yMax + sphereRad)) &&
+            ((spherePos.z >= zMin - sphereRad) && (spherePos.z <= zMax + sphereRad))) {
             return true;
         } else {
             return false;
