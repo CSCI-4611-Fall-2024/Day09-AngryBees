@@ -55,8 +55,9 @@ export class Bee extends gfx.Node3
 
         // TODO: Let's make this Bee look like a bee!
         const beeBody = gfx.Geometry3Factory.createSphere(2);
+        const S = gfx.Matrix4.makeScale(new gfx.Vector3(0.5, 0.5, 1));
+        beeBody.setLocalToParentMatrix(S, false);
         this.add(beeBody);
-
     }
 
     public update(deltaTime: number) {
