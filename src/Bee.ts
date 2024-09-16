@@ -71,9 +71,6 @@ export class Bee extends gfx.Node3
             heading = gfx.Vector3.normalize(this.velocity);
         }
 
-        const T = gfx.Matrix4.makeTranslation(this.position);
-        const R = gfx.Matrix4.lookAt(gfx.Vector3.ZERO, heading, gfx.Vector3.UP);
-        const S = gfx.Matrix4.makeScale(new gfx.Vector3(this.size, this.size, this.size));
-        this.setLocalToParentMatrix(gfx.Matrix4.multiplyAll(T, R, S), false);
+        this.setLocalToParentMatrix(gfx.Matrix4.IDENTITY, false);
     }
 }
