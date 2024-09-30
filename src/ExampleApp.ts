@@ -10,7 +10,6 @@ import {Bee} from './Bee'
 export class ExampleApp extends gfx.GfxApp
 {   
     private arrow = new Arrow();
-    private beeInitialPos = new gfx.Vector3(-30, 6, -35);
     private bee = new Bee();
     private targetSize = new gfx.Vector3(3, 12, 20);
     private targets: gfx.Mesh3[] = [];
@@ -19,7 +18,7 @@ export class ExampleApp extends gfx.GfxApp
     private target3Pos = new gfx.Vector3(23, 18, -35);
     private mouseStart = new gfx.Vector2();
 
-
+    
     // --- Create the ExampleApp class ---
     constructor()
     {
@@ -35,7 +34,7 @@ export class ExampleApp extends gfx.GfxApp
 
         // Setup a camera
         this.camera.setPerspectiveCamera(60, 4/3, 0.01, 100.0);
-        this.camera.position = new gfx.Vector3(0, 8, 18);
+        this.camera.position = new gfx.Vector3(0, 8, 20);
         this.camera.lookAt(new gfx.Vector3(0, 8, 0), gfx.Vector3.UP);
 
         // Create some lights
@@ -50,9 +49,9 @@ export class ExampleApp extends gfx.GfxApp
         this.scene.add(axes);
 
         // ground
-        const ground = gfx.Geometry3Factory.createBox(160, 20, 80);
+        const ground = gfx.Geometry3Factory.createBox(160, 4, 200);
         this.scene.add(ground);
-        ground.position = new gfx.Vector3(0, -10, -50);
+        ground.position = new gfx.Vector3(0, -4, -50);
         ground.material.setColor(new gfx.Color(0.3, 0.9, 0.4));
 
         // 3 targets
@@ -130,9 +129,8 @@ export class ExampleApp extends gfx.GfxApp
 
     reset(): void
     {
-        this.bee.position = this.beeInitialPos;
-        this.bee.velocity = gfx.Vector3.ZERO;
-        this.arrow.position = this.beeInitialPos;
+        this.bee.reset();
+        this.arrow.position = this.bee.initalPosition;
         this.arrow.vector = gfx.Vector3.ZERO;
         this.targets.forEach((target) => {
             target.visible = true;
