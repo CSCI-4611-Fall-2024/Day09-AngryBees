@@ -10,7 +10,6 @@ import {Bee} from './Bee'
 export class ExampleApp extends gfx.GfxApp
 {   
     private arrow = new Arrow();
-    private beeInitialPos = new gfx.Vector3(-30, 6, -35);
     private bee = new Bee();
     private targetSize = new gfx.Vector3(3, 12, 20);
     private targets: gfx.Mesh3[] = [];
@@ -19,7 +18,7 @@ export class ExampleApp extends gfx.GfxApp
     private target3Pos = new gfx.Vector3(23, 18, -35);
     private mouseStart = new gfx.Vector2();
 
-
+    
     // --- Create the ExampleApp class ---
     constructor()
     {
@@ -130,9 +129,8 @@ export class ExampleApp extends gfx.GfxApp
 
     reset(): void
     {
-        this.bee.position = this.beeInitialPos;
-        this.bee.velocity = gfx.Vector3.ZERO;
-        this.arrow.position = this.beeInitialPos;
+        this.bee.reset();
+        this.arrow.position = this.bee.initalPosition;
         this.arrow.vector = gfx.Vector3.ZERO;
         this.targets.forEach((target) => {
             target.visible = true;
