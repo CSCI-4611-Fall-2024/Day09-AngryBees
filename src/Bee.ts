@@ -45,10 +45,25 @@ export class Bee extends gfx.Node3
         this.add(beeBody);
 
         // head:   T(0, .1, -.8) * S(.4)
+        const beeHead = gfx.Geometry3Factory.createSphere(2);
+        const Shead = gfx.Matrix4.makeScale(new gfx.Vector3(0.4, 0.4, 0.4));
+        const Thead = gfx.Matrix4.makeTranslation(new gfx.Vector3(0, 0.1, -0.8));
+        const headCombo = gfx.Matrix4.multiplyAll(Thead, Shead);
+        beeHead.setLocalToParentMatrix(headCombo, false);
+        beeHead.material.setColor(new gfx.Color(0, 0, 0));
+        this.add(beeHead);
 
 
         // left wing:  T(-.55, .8, .5) * Ry(-Math.PI/8) * Rx(-Math.PI/8) * S(.2, .05, .8) 
-
+        const beeLWing = gfx.Geometry3Factory.createSphere(2);
+        const lWingS = gfx.Matrix4.makeScale(new gfx.Vector3(.2, .05, .8));
+        const lWingRx = gfx.Matrix4.makeRotationX(-Math.PI/8);
+        const lWingRy = gfx.Matrix4.makeRotationY(-Math.PI/8);
+        const lWingT = gfx.Matrix4.makeTranslation(new gfx.Vector3(-.55, .8, .5));
+        const lWingCombo = gfx.Matrix4.multiplyAll(lWingT, lWingRy, lWingRx, lWingS);
+        beeLWing.setLocalToParentMatrix(lWingCombo, false);
+        beeLWing.material.setColor(new gfx.Color(1, 1, 1));
+        this.add(beeLWing);
 
         // right wing:  T(.55, .8, .5) * Ry(Math.PI/8) * Rx(-Math.PI/8) * S(.2, .05, .8)   
 
